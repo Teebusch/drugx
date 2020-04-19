@@ -1,0 +1,190 @@
+---
+title: "Initial Data Exploration"
+output: html_notebook
+---
+
+Goal: Having a closer look at the data and doing some sanity checks.
+
+```{r}
+library(tidyverse)
+
+pat <- read_delim("Random_PatientLevelInfo_2020.tsv", delim = "\t")
+lab <- read_delim("Random_LabValuesInfo_2020.tsv", delim = "\t")
+```
+
+## Patients
+
+```{r}
+pat
+```
+ 
+ The file has one row per subject .
+
+```{r}
+length(unique(pat$USUBJID))
+length(unique(lab$USUBJID)) # there are lab values for all 452 patients
+```
+ 
+ There is only one study in the data set.
+ It has three arms with ~150 subjects in each of them.
+ 
+```{r}
+pat %>% 
+  count(STUDYID)
+
+pat %>% 
+  count(ACTARM, ACTARMCD)
+```
+
+```{r}
+pat %>% 
+  count(SEX)
+```
+
+I'm assuming "Undifferentiated" is a simple data entry error.
+
+```{r}
+pat <- pat %>% 
+  mutate(
+    SEX = fct_collapse(SEX,
+      U = c("UNDIFFERENTIATED", "U")
+    )
+  )
+```
+
+Some of the race categories are almost empty. It might be ok to combine them.
+
+```{r}
+pat %>% 
+  count(RACE)
+```
+
+## Lab values 
+
+```{r}
+lab <- lab %>% 
+  mutate(
+    BMRKR2 = fct_relevel(BMRKR2, c("LOW", "MEDIUM", "HIGH")),
+    AVISIT = fct_relevel(AVISIT, "SCREENING", after = 0)
+  )
+```
+
+
+ALl measurements are from the same study 
+
+```{r}
+lab %>% 
+  count(STUDYID)
+```
+
+ * ALT is increased with liver damage and is used to screen for and/or monitor liver disease
+ * CRP is a blood test marker for inflammation in the body (e.g., chronic inflammatory diseases such as lupus, vasculitis, or rheumatoid arthritis (RA)
+ * high IGA levels might be caused by allergies, chronic infections, autoimmune disorders such as RA
+ 
+```{r}
+lab
+```
+
+There are two biomarkers (no obvious correlation between them). I'm making marker 2 an ordered factor.
+
+```{r}
+
+lab %>% 
+  ggplot(aes(BMRKR2, BMRKR1)) +
+  geom_boxplot()
+```
+
+No surprises here - test names, categories and units match nicely.
+
+```{r}
+lab %>% 
+  count(LBTEST, LBTESTCD, LBCAT, AVALU)
+```
+
+It seems like we have consistent measures, no missing values, no values that are clearly wrong.
+
+```{r fig.asp=0.5}
+lab %>% 
+  group_by(USUBJID, LBTEST) %>% 
+  summarise(n_observations = n()) %>% 
+  group_by(LBTEST) %>% 
+  count(n_observations)
+
+lab %>% 
+  count(AVISIT)
+
+any(is.na(lab$AVAL))
+
+lab %>%  
+  ggplot(aes(AVISIT, AVAL)) +
+  geom_boxplot() +
+  facet_wrap(~LBTEST) +
+  scale_x_discrete(guide = guide_axis(n.dodge = 2))
+```
+
+#### some randomly selcted patient profiles
+
+```{r fig.asp=0.5}
+
+tmp <- pat %>% 
+  group_by(ACTARM) %>% 
+  sample_n(20) %>% 
+  left_join(lab, by = "USUBJID") 
+
+tmp %>%  
+  ggplot(aes(AVISIT, AVAL, group = USUBJID)) +
+  geom_line(alpha = .1) +
+  facet_grid(LBTEST ~ ACTARM) +
+  scale_x_discrete(guide = guide_axis(n.dodge = 2))
+```
+
+### Mean group performance over time, by study arm, Biomarker2
+
+```{r fig.asp=0.5}
+
+tmp <- pat %>% 
+  left_join(lab, by = "USUBJID") 
+
+tmp %>%  
+  ggplot(aes(AVISIT, AVAL, group = ACTARM, color = ACTARM)) +
+  geom_smooth(alpha = .05, method = "loess") +
+  facet_wrap(~LBTEST) +
+  scale_x_discrete(guide = guide_axis(n.dodge = 2))
+
+tmp %>%  
+  ggplot(aes(AVISIT, AVAL, group = ACTARM, color = ACTARM)) +
+  geom_smooth(se = FALSE, method = "loess") +
+  facet_grid(BMRKR2 ~ LBTEST) +
+  scale_x_discrete(guide = guide_axis(n.dodge = 2))
+```
+
+### Change relative to baseline, by study arm, Biomarker 2
+
+```{r fig.asp=0.5}
+
+tmp <- pat %>% 
+  left_join(lab, by = "USUBJID") %>% 
+  filter(AVISIT != "SCREENING") %>% 
+  group_by(USUBJID, LBTEST) %>% 
+  mutate(AVAL_CHANGE = AVAL - first(AVAL)) %>% 
+  ungroup()
+
+tmp %>%  
+  ggplot(aes(AVISIT, AVAL_CHANGE, group = USUBJID, color = ACTARM)) +
+  geom_line(alpha = .05) +
+  geom_smooth(aes(group = 1)) +
+  facet_grid(ACTARM~LBTEST) +
+  scale_x_discrete(guide = guide_axis(n.dodge = 2))
+
+tmp %>%  
+  ggplot(aes(AVISIT, AVAL_CHANGE, group = ACTARM, color = ACTARM)) +
+  geom_smooth(alpha = .05, method = "loess") +
+  facet_wrap(~LBTEST) +
+  scale_x_discrete(guide = guide_axis(n.dodge = 2))
+
+tmp %>%  
+  ggplot(aes(AVISIT, AVAL_CHANGE, group = ACTARM, color = ACTARM)) +
+  geom_smooth(alpha = .05, method = "loess") +
+  facet_wrap(BMRKR2 ~ LBTEST) +
+  scale_x_discrete(guide = guide_axis(n.dodge = 2))
+```
