@@ -49,20 +49,20 @@ mod_filters_ui <- function(id){
       selected = c("HIGH", "MEDIUM", "LOW")
     ),
     
-    sliderInput(
-      ns("filter_ALT"), "ALT at Sreening", 
-      min = 0, max = 100, value = c(0, 100)
-    ),
-    
-    sliderInput(
-      ns("filter_CRP"), "CRP at Sreening", 
-      min = 0, max = 100, value = c(0, 100)
-    ),
-    
-    sliderInput(
-      ns("filter_IGA"), "IGA at Sreening",
-      min = 0, max = 100, value = c(0, 100)
-    ),
+    # sliderInput(
+    #   ns("filter_ALT"), "ALT at Sreening", 
+    #   min = 0, max = 100, value = c(0, 100)
+    # ),
+    # 
+    # sliderInput(
+    #   ns("filter_CRP"), "CRP at Sreening", 
+    #   min = 0, max = 100, value = c(0, 100)
+    # ),
+    # 
+    # sliderInput(
+    #   ns("filter_IGA"), "IGA at Sreening",
+    #   min = 0, max = 100, value = c(0, 100)
+    # ),
   )
 }
     
@@ -79,11 +79,11 @@ mod_filters_server <- function(input, output, session){
   r <- prettyRange(pat$BMRKR1)
   updateSliderInput(session, "filter_biomarker1", min = r[1], max = r[2], value = r)
   
-  screening <- dplyr::filter(lab, AVISIT == "SCREENING")
-  for (test in c("ALT", "CRP", "IGA")) {
-    r <- prettyRange( dplyr::filter(screening, LBTESTCD == test)$AVAL )
-    updateSliderInput(session, paste0("filter_", test), min = r[1], max = r[2], value = r)
-  }
+  # screening <- dplyr::filter(lab, AVISIT == "SCREENING")
+  # for (test in c("ALT", "CRP", "IGA")) {
+  #   r <- prettyRange( dplyr::filter(screening, LBTESTCD == test)$AVAL )
+  #   updateSliderInput(session, paste0("filter_", test), min = r[1], max = r[2], value = r)
+  # }
  
   races <- unique(pat$RACE)
   updateSelectizeInput(session, "filter_race", choices = races, selected = races)
@@ -94,10 +94,10 @@ mod_filters_server <- function(input, output, session){
       flt_sex        = reactive({ input$filter_sex }),
       flt_race       = reactive({ input$filter_race }),
       flt_biomarker1 = reactive({ input$filter_biomarker1 }),
-      flt_biomarker2 = reactive({ input$filter_biomarker2 }),
-      flt_ALT        = reactive({ input$filter_ALT }),
-      flt_CRP        = reactive({ input$filter_CRP }),
-      flt_IGA        = reactive({ input$filter_IGA })
+      flt_biomarker2 = reactive({ input$filter_biomarker2 })
+      #flt_ALT        = reactive({ input$filter_ALT }),
+      #flt_CRP        = reactive({ input$filter_CRP }),
+      #flt_IGA        = reactive({ input$filter_IGA })
     )
   )
   
