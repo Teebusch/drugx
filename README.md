@@ -18,7 +18,9 @@ You can install and run the app from
 [Github](https://github.com/teebusch/drugx) with:
 
 ``` r
-install_github("Teebusch/drugx")
+# Install devtools if needed
+if(!require(devtools)) install.packages("devtools")
+devtools::install_github("Teebusch/drugx")
 library(drugx)
 drugx::run_app()
 ```
