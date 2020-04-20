@@ -10,9 +10,21 @@ app_ui <- function(request) {
     golem_add_external_resources(),
     # List the first level UI elements here 
     fluidPage(
+      
       titlePanel("Drug X Clinical Trial", windowTitle = "Drug X Clinical Trial"),
-      mod_patients_ui("patients_ui_1"),
-      mod_trial_ui("trial_ui_1")
+      
+      sidebarLayout(
+        
+        sidebarPanel(
+          width = 3,
+          mod_filters_ui("filters_ui_1"),
+        ),
+        
+        mainPanel(
+          mod_patients_ui("patients_ui_1"),
+          mod_trial_ui("trial_ui_1")
+        )
+      )
     )
   )
 }

@@ -22,10 +22,12 @@ usethis::use_package( "ggplot2" )
 ## Create a module infrastructure in R/
 golem::add_module( name = "patients" )
 golem::add_module( name = "trial" )
+golem::add_module( name = "filters" )
 
 ## Add helper functions ----
 ## Creates fct_* and utils_*
 golem::add_fct( "graphs" ) 
+golem::add_fct( "helpers" )
 golem::add_utils( "helpers" )
 
 ## External resources
