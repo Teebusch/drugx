@@ -25,7 +25,7 @@ golem::add_module( name = "trial" )
 
 ## Add helper functions ----
 ## Creates fct_* and utils_*
-golem::add_fct( "helpers" ) 
+golem::add_fct( "graphs" ) 
 golem::add_utils( "helpers" )
 
 ## External resources

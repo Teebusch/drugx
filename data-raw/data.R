@@ -7,8 +7,7 @@ lab <- read_delim("data-raw/Random_LabValuesInfo_2020.tsv", delim = "\t")
 # Patient level data
 pat <- pat %>% 
   mutate(
-    SEX = fct_collapse(SEX, U = c("UNDIFFERENTIATED", "U")
-    )
+    SEX = fct_collapse(SEX, U = c("UNDIFFERENTIATED", "U"))
   )
 
 # Lab measurements
@@ -29,4 +28,7 @@ lab <- lab %>%
   ungroup()
 
 
-usethis::use_data(pat, lab)
+pat <- left_join(pat, distinct(select(lab, USUBJID, BMRKR1, BMRKR2)), by = "USUBJID")
+lab <- left_join(lab, select(pat, USUBJID, ACTARM), by = "USUBJID")
+
+usethis::use_data(pat, lab, overwrite = TRUE)
