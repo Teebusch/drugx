@@ -56,8 +56,14 @@ mod_trial_ui <- function(id){
 #' trial Server Function
 #'
 #' @noRd
-mod_trial_server <- function(input, output, session){
+mod_trial_server <- function(input, output, session, pat_flt, lab_flt){
   ns <- session$ns
+  
+  checkData <- reactive({
+    validate(
+      need(nrow(pat_flt()) > 0, "Not enough data selected.")
+    )
+  })
   
   # desired output (absolute vs. relative to baseline)
   measurement <- reactive({ sym(input$measurement) })
@@ -77,19 +83,23 @@ mod_trial_server <- function(input, output, session){
   
   
   output$plot_groupDiff <- renderPlot({
-    lab %>% 
+    checkData()
+    lab_flt() %>% 
       filter( AVISIT != "SCREENING" ) %>% 
       plotGroupDifferences( !!measurement() )
   })
   
   output$plot_allvisits <- renderPlot({
-    lab %>% 
+    checkData()
+    lab_flt() %>% 
       filter( AVISIT != "SCREENING" ) %>% 
       plotAllVisits( !!measurement(), max_sample = input$sampleSize )
   })
   
   output$plot_visitALT <- renderPlot({
-    plotLabMeasurementAtVisit( lab, !!measurement(), visit(), "ALT" ) +
+    checkData()
+    lab_flt() %>% 
+    plotLabMeasurementAtVisit( !!measurement(), visit(), "ALT" ) +
       labs(
         title = "Alanine Aminotransferase (ALT)",
         subtitle = visit(), 
@@ -98,7 +108,9 @@ mod_trial_server <- function(input, output, session){
   })
   
   output$plot_visitCRP <- renderPlot({
-    plotLabMeasurementAtVisit( lab, !!measurement(), visit(), "CRP" ) +
+    checkData()
+    lab_flt() %>% 
+    plotLabMeasurementAtVisit( !!measurement(), visit(), "CRP" ) +
       labs(
         title = "C-Reactive Protein (CRP)", 
         subtitle = visit(), 
@@ -106,7 +118,9 @@ mod_trial_server <- function(input, output, session){
   })
   
   output$plot_visitIGA <- renderPlot({
-    plotLabMeasurementAtVisit( lab, !!measurement(), visit(), "IGA" ) +
+    checkData()
+    lab_flt() %>% 
+    plotLabMeasurementAtVisit( !!measurement(), visit(), "IGA" ) +
       labs(
         title = "Immunoglobulin A (IGA)",
         subtitle = visit(), 

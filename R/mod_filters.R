@@ -1,6 +1,6 @@
 #' filters UI Function
 #'
-#' @description A shiny Module.
+#' @description A shiny Module that shows filters to filter the data.
 #'
 #' @param id,input,output,session Internal parameters for {shiny}.
 #'
@@ -72,6 +72,7 @@ mod_filters_ui <- function(id){
 mod_filters_server <- function(input, output, session){
   ns <- session$ns
   
+  # Update Widget values with ranges from the actual data
   r <- range(pat$AGE)
   updateSliderInput(session, "filter_age", min = r[1], max = r[2], value = r)
   

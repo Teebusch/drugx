@@ -38,16 +38,25 @@ mod_patients_ui <- function(id){
 #' patients Server Function
 #'
 #' @noRd 
-mod_patients_server <- function(input, output, session){
+mod_patients_server <- function(input, output, session, pat_flt, lab_flt){
   ns <- session$ns
   
+  checkData <- reactive({
+    validate(
+      need(nrow(pat_flt()) > 0, "Not enough data selected.")
+    )
+  })
+  
   output$plot_age <- renderPlot({
-    plotHistogramByArm(pat, AGE) + 
+    checkData()
+    pat_flt() %>% 
+    plotHistogramByArm(AGE) + 
       labs(title = "Age", x = "Age (years)", y = "count")
   })
   
   output$plot_sex <- renderPlot({
-    pat %>% 
+    checkData()
+    pat_flt() %>% 
       mutate(SEX = forcats::fct_infreq(SEX)) %>% 
       plotProportionsByArm(SEX) + 
       labs(title = "Sex")
@@ -55,7 +64,8 @@ mod_patients_server <- function(input, output, session){
   })
   
   output$plot_race <- renderPlot({
-    pat %>% 
+    checkData()
+    pat_flt() %>%  
       mutate(
         # prettify RACE variable
         RACE = forcats::fct_lump(RACE, prop = 0.01, other_level = "OTHER") %>% 
@@ -68,29 +78,37 @@ mod_patients_server <- function(input, output, session){
   })
   
   output$plot_biomarker1 <- renderPlot({
-    pat %>% 
+    checkData()
+    pat_flt() %>% 
       plotHistogramByArm(BMRKR1) + 
       labs(title = "Biomarker 1", x = "Measurement")
   })
   
   output$plot_biomarker2 <- renderPlot({
-    pat %>% 
+    checkData()
+    pat_flt() %>% 
       plotProportionsByArm(BMRKR2) + 
       labs(title = "Biomarker 2")
   })
   
   output$plot_screenALT <- renderPlot({
-    plotLabMeasurementAtVisit(lab, AVAL, "SCREENING", "ALT") +
+    checkData()
+    lab_flt() %>% 
+    plotLabMeasurementAtVisit(AVAL, "SCREENING", "ALT") +
       labs(title = "Alanine Aminotransferase (ALT)", x = "U/L")
   })
   
   output$plot_screenCRP <- renderPlot({
-    plotLabMeasurementAtVisit(lab, AVAL, "SCREENING", "CRP") +
+    checkData()
+    lab_flt() %>% 
+    plotLabMeasurementAtVisit(AVAL, "SCREENING", "CRP") +
       labs(title = "C-Reactive Protein (CRP)", x = "mg/L")
   })
   
   output$plot_screenIGA <- renderPlot({
-    plotLabMeasurementAtVisit(lab, AVAL, "SCREENING", "IGA") +
+    checkData()
+    lab_flt() %>% 
+    plotLabMeasurementAtVisit(AVAL, "SCREENING", "IGA") +
       labs(title = "Immunoglobulin A (IGA)", x = "g/L")
   })
   

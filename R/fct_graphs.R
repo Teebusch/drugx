@@ -71,7 +71,7 @@ plotProportionsByArm <- function(df, var) {
 #' @noRd
 plotAllVisits <- function(df, var, max_sample = 0) {
   # random sample of patients to display in background
-  df_sample <- pat %>%
+  df_sample <- df %>%
     select(USUBJID, ACTARM) %>%
     group_by(ACTARM) %>%
     sample_n(min(max_sample, n())) %>%
