@@ -1,6 +1,6 @@
 #' trial UI Function
 #'
-#' @description A shiny Module.
+#' @description A shiny Module to show the trial graphs.
 #'
 #' @param id,input,output,session Internal parameters for {shiny}.
 #'

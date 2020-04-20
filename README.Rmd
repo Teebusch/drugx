@@ -90,23 +90,26 @@ drugx::run_app()
 
 - help explore associations between background variables and treatment
 - filter data to visualize subgroups
-- allow high level overview as well as invsetigating subgroups and individuals
+- allow high level overview as well as investigating subgroups and individuals
 - comparing data in different study arms
 
 ### Necessary
 
 - [x] sanity checks / cleaning of supplied data
-- [ ] graphs of background variables (for all data and by study arm)
-- [ ] allow to filter data by age, race, sex, biomarkers 1 and 2, performance at screening, performance at baseline, individual subjects
-- [ ] graph that shows development of ALT, CRP, IGA for individuals 
-- [ ] graph that shows development of ALT, CRP, IGA by study arm (summary)
+- [x] graphs of background variables (for all data and by study arm)
+- [x] allow to filter data by age, race, sex, biomarkers 1 and 2, performance at baseline
+subjects
+- [x] graph that shows development of ALT, CRP, IGA for individuals 
+- [x] graph that shows development of ALT, CRP, IGA by study arm (summary)
+- [x] deliver as R package
 
+## ToDo / Possible next steps
 
-## Nice to have
-
-- [ ] deliver as R package
-- [ ] test suite 
-- [ ] statistical model with significance tests
+- [ ] allow data to filter by performance of screening, individual patient
+- [ ] comprehensive test suite 
+- [ ] statistical models with significance tests
+- [ ] interactive plotly plots with hover functionality
+- [ ] tables with summary statistics
 
 
 ## Open Questions

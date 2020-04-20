@@ -7,7 +7,6 @@
 #' @noRd 
 #'
 #' @importFrom shiny NS tagList 
-#' @importFrom magrittr "%>%"
 #' 
 #' @import ggplot2
 #' @import dplyr

@@ -31,4 +31,4 @@ lab <- lab %>%
 pat <- left_join(pat, distinct(select(lab, USUBJID, BMRKR1, BMRKR2)), by = "USUBJID")
 lab <- left_join(lab, select(pat, USUBJID, ACTARM), by = "USUBJID")
 
-usethis::use_data(pat, lab, overwrite = TRUE)
+usethis::use_data(pat, lab)
