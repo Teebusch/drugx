@@ -21,7 +21,7 @@ mod_patients_ui <- function(id){
       column( width = 4, plotOutput(ns("plot_sex")) ),
       column( width = 4, plotOutput(ns("plot_race")) ),
     ),
-    h2("Biomarkers at Basline"),
+    h2("Biomarkers at Baseline"),
     fluidRow(
       column( width = 6, plotOutput(ns("plot_biomarker1")) ),
       column( width = 6, plotOutput(ns("plot_biomarker2")) ),
@@ -80,17 +80,17 @@ mod_patients_server <- function(input, output, session){
   })
   
   output$plot_screenALT <- renderPlot({
-    plotLabMeasurementAtVisit(lab, "SCREENING", "ALT") +
+    plotLabMeasurementAtVisit(lab, AVAL, "SCREENING", "ALT") +
       labs(title = "Alanine Aminotransferase (ALT)", x = "U/L")
   })
   
   output$plot_screenCRP <- renderPlot({
-    plotLabMeasurementAtVisit(lab, "SCREENING", "CRP") +
+    plotLabMeasurementAtVisit(lab, AVAL, "SCREENING", "CRP") +
       labs(title = "C-Reactive Protein (CRP)", x = "mg/L")
   })
   
   output$plot_screenIGA <- renderPlot({
-    plotLabMeasurementAtVisit(lab, "SCREENING", "IGA") +
+    plotLabMeasurementAtVisit(lab, AVAL, "SCREENING", "IGA") +
       labs(title = "Immunoglobulin A (IGA)", x = "g/L")
   })
   

@@ -18,20 +18,20 @@ plotHistogramByArm <- function(df, var) {
 
 
 
-#' Show lab measurements
+#' Show lab measurements as histogram
 #'
 #' @param df  df with lab maeasurements
 #' @param visit Visit to display (one of SCREENING, BASELINE, ...)
 #' @param test Test to display (one of IGA, CRP, ALT)
 #' 
 #' @noRd 
-plotLabMeasurementAtVisit <- function(df, visit, test) {
+plotLabMeasurementAtVisit <- function(df, var, visit, test) {
   df %>% 
     filter(
       AVISIT == visit,
       LBTESTCD == test
     ) %>% 
-    plotHistogramByArm(AVAL)
+    plotHistogramByArm( {{ var}} )
 }
 
 
@@ -60,3 +60,67 @@ plotProportionsByArm <- function(df, var) {
       axis.title.y = element_blank()
     )
 }  
+
+
+
+#' Plot timeline of all visits
+#'
+#' @param df 
+#' @param max_sample 
+#'
+#' @noRd
+plotAllVisits <- function(df, var, max_sample = 0) {
+  # random sample of patients to display in background
+  df_sample <- pat %>%
+    select(USUBJID, ACTARM) %>%
+    group_by(ACTARM) %>%
+    sample_n(min(max_sample, n())) %>%
+    left_join(df, by = c("USUBJID", "ACTARM"))
+  
+  ggplot(df, aes(AVISIT, {{ var }}, group = USUBJID, color = ACTARM)) +
+    geom_line(data = df_sample, alpha = .1) + 
+    #geom_smooth(aes(group = 1), method = "loess") +
+    stat_summary(
+      aes(group = 1),
+      geom = "line",
+      fun = mean
+    ) +
+    facet_grid(ACTARM ~ LBTEST) +
+    scale_x_discrete(guide = guide_axis(n.dodge = 2)) +
+    theme(
+      legend.position = "none",
+      panel.grid.minor = element_blank(),
+      panel.grid.major = element_blank()
+    )
+}
+
+
+
+#' Group Difference Plot
+#'
+#' @param df 
+#' @param var measurement variable to be plotted (one of AVAL, AVAL_change)
+#'
+#' @noRd
+plotGroupDifferences <- function(df, var) {
+  df %>%  
+    ggplot(aes(AVISIT, {{ var }}, group = ACTARM, color = ACTARM, fill = ACTARM)) +
+    stat_summary(
+      geom = "line", 
+      position = position_dodge(width = 0.4),
+      fun = mean
+    ) +
+    stat_summary(
+      geom = "pointrange", 
+      fun.data = "mean_se", 
+      position = position_dodge(width = 0.4),
+      alpha = .4
+    ) +
+    facet_wrap(~LBTEST) +
+    scale_x_discrete(guide = guide_axis(n.dodge = 2)) +
+    theme(
+      legend.position = "bottom",
+      panel.grid.minor = element_blank(),
+      panel.grid.major = element_blank()
+    )
+}
