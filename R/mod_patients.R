@@ -60,7 +60,6 @@ mod_patients_server <- function(input, output, session, pat_flt, lab_flt){
       mutate(SEX = forcats::fct_infreq(SEX)) %>% 
       plotProportionsByArm(SEX) + 
       labs(title = "Sex")
-      
   })
   
   output$plot_race <- renderPlot({

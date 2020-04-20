@@ -32,7 +32,7 @@ mod_trial_ui <- function(id){
       "Max. number of individual patients to show.", 
       min = 0, max = 164, value = 50
     ),
-    plotOutput(ns("plot_allvisits")),
+    plotOutput(ns("plot_allvisits"), height = "600px"),
     
     h2( "Measurements by Arm and Visit" ),
     sliderInput(

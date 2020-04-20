@@ -1,3 +1,21 @@
+theme_update(
+  panel.background = element_rect(fill = "#FBFAF9"),
+  text = element_text(size = 14)
+)
+
+#' Custom color scale
+#'
+#' @noRd 
+scale_color_drugx <- function(...)
+  scale_colour_manual(..., values = c('#2C3256', '#C2728D', '#CAB17A'))
+
+#' Custom fill scale
+#'
+#' @noRd 
+scale_fill_drugx <- function(...)
+  scale_fill_manual(..., values = c('#2C3256', '#C2728D', '#CAB17A'))
+
+
 #' Plot of Histogram by study arm
 #'
 #' @param df 
@@ -5,14 +23,19 @@
 #'
 #' @noRd 
 plotHistogramByArm <- function(df, var) {
-  ggplot(df, aes({{ var }})) +
-    geom_histogram(aes(fill = ACTARM), bins = 100) +
+  ggplot(df, aes({{ var }}, fill = ACTARM)) +
+    geom_vline(aes(xintercept = mean( {{ var}} )), 
+               color = "#E8E7E6", linetype = "solid")+
+    geom_histogram(binwidth = 1) + 
     facet_wrap(~ ACTARM, ncol = 1) +
+    scale_fill_drugx() +
     theme(
       legend.position = "none",
       panel.grid.minor = element_blank(),
       panel.grid.major = element_blank(),
-      axis.title.y = element_blank()
+      axis.title.y = element_blank(),
+      axis.text.y = element_blank(),
+      axis.ticks.y = element_blank()
     )
 }
 
@@ -21,6 +44,7 @@ plotHistogramByArm <- function(df, var) {
 #' Show lab measurements as histogram
 #'
 #' @param df  df with lab maeasurements
+#' @param var variable to display
 #' @param visit Visit to display (one of SCREENING, BASELINE, ...)
 #' @param test Test to display (one of IGA, CRP, ALT)
 #' 
@@ -53,11 +77,14 @@ plotProportionsByArm <- function(df, var) {
     ) %>% 
     ggplot(aes(prop, {{ var }}, color = ACTARM)) +
     geom_point(size = 4, alpha = .7) +
-    labs(x = "Proportion") +
+    scale_color_drugx() +
+    labs(x = "Proportion in Sample") +
     theme(
       panel.grid.minor.x = element_blank(),
       panel.grid.major.x = element_blank(),
-      axis.title.y = element_blank()
+      panel.grid.major.y = element_line(color = "#E8E7E6"),
+      axis.title.y = element_blank(),
+      legend.position = "none"
     )
 }  
 
@@ -66,6 +93,7 @@ plotProportionsByArm <- function(df, var) {
 #' Plot timeline of all visits
 #'
 #' @param df 
+#' @param var
 #' @param max_sample 
 #'
 #' @noRd
@@ -79,18 +107,21 @@ plotAllVisits <- function(df, var, max_sample = 0) {
   
   ggplot(df, aes(AVISIT, {{ var }}, group = USUBJID, color = ACTARM)) +
     geom_line(data = df_sample, alpha = .1) + 
-    #geom_smooth(aes(group = 1), method = "loess") +
     stat_summary(
       aes(group = 1),
       geom = "line",
-      fun = mean
+      fun = mean,
+      size = 1.5
     ) +
     facet_grid(ACTARM ~ LBTEST) +
+    scale_color_drugx() +
     scale_x_discrete(guide = guide_axis(n.dodge = 2)) +
     theme(
       legend.position = "none",
       panel.grid.minor = element_blank(),
-      panel.grid.major = element_blank()
+      panel.grid.major = element_blank(),
+      axis.title.x = element_blank(),
+      axis.title.y = element_blank()
     )
 }
 
@@ -117,10 +148,14 @@ plotGroupDifferences <- function(df, var) {
       alpha = .4
     ) +
     facet_wrap(~LBTEST) +
+    scale_color_drugx() +
+    scale_fill_drugx() +
     scale_x_discrete(guide = guide_axis(n.dodge = 2)) +
     theme(
       legend.position = "bottom",
       panel.grid.minor = element_blank(),
-      panel.grid.major = element_blank()
+      panel.grid.major = element_blank(),
+      axis.title.x = element_blank(),
+      axis.title.y = element_blank()
     )
 }
