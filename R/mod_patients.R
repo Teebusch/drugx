@@ -43,7 +43,7 @@ mod_patients_server <- function(input, output, session, pat_flt, lab_flt){
   
   checkData <- reactive({
     validate(
-      need(nrow(pat_flt()) > 0, "Not enough data selected.")
+      need(nrow(pat_flt()) > 0, "Busy loading the data or not enough data selected.")
     )
   })
   
