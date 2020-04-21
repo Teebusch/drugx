@@ -1,19 +1,18 @@
 Package: drugx
-Title: Drug X Clinical Trial
+Title: Drug X Clinical Trial Shiny App
 Version: 0.0.0.9000
 Authors@R: person('Tobias', 'Busch', email = 'teebusch@gmail.com', role = c('cre', 'aut'))
 Description: A Shiny app for visualizing of the the clinical trial of Drug X.
+URL: https://github.com/Teebusch/drugx/
 License: MIT + file LICENSE
 Imports: 
     config,
     golem,
     shiny,
-    htmltools,
     dplyr,
     ggplot2,
     forcats,
-    stringr,
-    rlang
+    stringr
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.1.0

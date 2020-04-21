@@ -7,13 +7,13 @@ theme_update(
 #'
 #' @noRd 
 scale_color_drugx <- function(...)
-  scale_colour_manual(..., values = c('#2C3256', '#C2728D', '#CAB17A'))
+  scale_colour_manual(..., values = c("#2C3256", "#C2728D", "#CAB17A"))
 
 #' Custom fill scale
 #'
 #' @noRd 
 scale_fill_drugx <- function(...)
-  scale_fill_manual(..., values = c('#2C3256', '#C2728D', '#CAB17A'))
+  scale_fill_manual(..., values = c("#2C3256", "#C2728D", "#CAB17A"))
 
 
 #' Plot of Histogram by study arm
@@ -22,10 +22,10 @@ scale_fill_drugx <- function(...)
 #' @param var 
 #'
 #' @noRd 
-plotHistogramByArm <- function(df, var) {
+plot_histogram_by_arm <- function(df, var) {
   ggplot(df, aes({{ var }}, fill = ACTARM)) +
-    geom_vline(aes(xintercept = mean( {{ var}} )), 
-               color = "#E8E7E6", linetype = "solid")+
+    geom_vline(aes(xintercept = mean( {{ var }} )), 
+               color = "#E8E7E6", linetype = "solid") +
     geom_histogram(binwidth = 1) + 
     facet_wrap(~ ACTARM, ncol = 1) +
     scale_fill_drugx() +
@@ -49,13 +49,13 @@ plotHistogramByArm <- function(df, var) {
 #' @param test Test to display (one of IGA, CRP, ALT)
 #' 
 #' @noRd 
-plotLabMeasurementAtVisit <- function(df, var, visit, test) {
+plot_lab_measurement_at_visit <- function(df, var, visit, test) {
   df %>% 
     filter(
       AVISIT == visit,
       LBTESTCD == test
     ) %>% 
-    plotHistogramByArm( {{ var}} )
+    plot_histogram_by_arm( {{ var}} )
 }
 
 
@@ -66,7 +66,7 @@ plotLabMeasurementAtVisit <- function(df, var, visit, test) {
 #' @param var 
 #'
 #' @noRd 
-plotProportionsByArm <- function(df, var) {
+plot_proportions_by_arm <- function(df, var) {
   df %>% 
     group_by(ACTARM, {{ var }}) %>% 
     summarise(
@@ -97,7 +97,7 @@ plotProportionsByArm <- function(df, var) {
 #' @param max_sample 
 #'
 #' @noRd
-plotAllVisits <- function(df, var, max_sample = 0) {
+plot_all_visits <- function(df, var, max_sample = 0) {
   # random sample of patients to display in background
   df_sample <- df %>%
     select(USUBJID, ACTARM) %>%
@@ -133,9 +133,10 @@ plotAllVisits <- function(df, var, max_sample = 0) {
 #' @param var measurement variable to be plotted (one of AVAL, AVAL_change)
 #'
 #' @noRd
-plotGroupDifferences <- function(df, var) {
+plot_group_differences <- function(df, var) {
   df %>%  
-    ggplot(aes(AVISIT, {{ var }}, group = ACTARM, color = ACTARM, fill = ACTARM)) +
+    ggplot(aes(AVISIT, {{ var }}, group = ACTARM, 
+               color = ACTARM, fill = ACTARM)) +
     stat_summary(
       geom = "line", 
       position = position_dodge(width = 0.4),

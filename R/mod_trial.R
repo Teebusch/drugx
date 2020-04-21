@@ -9,10 +9,10 @@
 #' @importFrom shiny NS tagList 
 #' 
 #' @import ggplot2
-mod_trial_ui <- function(id){
+mod_trial_ui <- function(id) {
   ns <- NS(id)
   tagList(
-    h1( "Clinical Trial Results" ),
+    h1("Clinical Trial Results"),
     radioButtons(
       ns("measurement"), 
       "Select how measurements are displayed",
@@ -23,10 +23,10 @@ mod_trial_ui <- function(id){
       selected = "AVAL_CHANGE"
     ),
     
-    h2( "Group Means" ), 
+    h2("Group Means"), 
     plotOutput(ns("plot_groupDiff")),
     
-    h2( "Measurements by Arm" ),
+    h2("Measurements by Arm"),
     sliderInput(
       ns("sampleSize"), 
       "Max. number of individual patients to show.", 
@@ -34,7 +34,7 @@ mod_trial_ui <- function(id){
     ),
     plotOutput(ns("plot_allvisits"), height = "600px"),
     
-    h2( "Measurements by Arm and Visit" ),
+    h2("Measurements by Arm and Visit"),
     sliderInput(
       ns("day"), 
       "Select day to be displayed.", 
@@ -46,9 +46,9 @@ mod_trial_ui <- function(id){
       )
     ),
     fluidRow(
-      column( width = 4, plotOutput(ns("plot_visitALT")) ),
-      column( width = 4, plotOutput(ns("plot_visitCRP")) ),
-      column( width = 4, plotOutput(ns("plot_visitIGA")) ),
+      column(width = 4, plotOutput(ns("plot_visitALT"))),
+      column(width = 4, plotOutput(ns("plot_visitCRP"))),
+      column(width = 4, plotOutput(ns("plot_visitIGA"))),
     )
   )
 }
@@ -56,12 +56,13 @@ mod_trial_ui <- function(id){
 #' trial Server Function
 #'
 #' @noRd
-mod_trial_server <- function(input, output, session, pat_flt, lab_flt){
+mod_trial_server <- function(input, output, session, pat_flt, lab_flt) {
   ns <- session$ns
   
-  checkData <- reactive({
+  check_data <- reactive({
     validate(
-      need(nrow(pat_flt()) > 0, "Busy loading the data or not enough data selected.")
+      need(nrow(pat_flt()) > 0, 
+           "Busy loading the data or not enough data selected.")
     )
   })
   
@@ -73,33 +74,33 @@ mod_trial_server <- function(input, output, session, pat_flt, lab_flt){
   visit <- reactive({ visits[[(input$day %/% 7) + 1]] })
   
   # max subjects in each arm * measurent
-  maxSampleSize <- group_by(lab, ACTARM) %>% 
-    count( USUBJID ) %>% 
+  max_sample_size <- group_by(lab, ACTARM) %>% 
+    count(USUBJID) %>% 
     tally() %>% 
     .$n %>% 
     max()
   
-  updateSliderInput( session, "sampleSize", max = maxSampleSize )
+  updateSliderInput(session, "sampleSize", max = max_sample_size)
   
   
   output$plot_groupDiff <- renderPlot({
-    checkData()
+    check_data()
     lab_flt() %>% 
-      filter( AVISIT != "SCREENING" ) %>% 
-      plotGroupDifferences( !!measurement() )
+      filter(AVISIT != "SCREENING") %>% 
+      plot_group_differences(!!measurement())
   })
   
   output$plot_allvisits <- renderPlot({
-    checkData()
+    check_data()
     lab_flt() %>% 
-      filter( AVISIT != "SCREENING" ) %>% 
-      plotAllVisits( !!measurement(), max_sample = input$sampleSize )
+      filter(AVISIT != "SCREENING") %>% 
+      plot_all_visits(!!measurement(), max_sample = input$sampleSize)
   })
   
   output$plot_visitALT <- renderPlot({
-    checkData()
+    check_data()
     lab_flt() %>% 
-    plotLabMeasurementAtVisit( !!measurement(), visit(), "ALT" ) +
+      plot_lab_measurement_at_visit(!!measurement(), visit(), "ALT") +
       labs(
         title = "Alanine Aminotransferase (ALT)",
         subtitle = visit(), 
@@ -108,9 +109,9 @@ mod_trial_server <- function(input, output, session, pat_flt, lab_flt){
   })
   
   output$plot_visitCRP <- renderPlot({
-    checkData()
+    check_data()
     lab_flt() %>% 
-    plotLabMeasurementAtVisit( !!measurement(), visit(), "CRP" ) +
+      plot_lab_measurement_at_visit(!!measurement(), visit(), "CRP") +
       labs(
         title = "C-Reactive Protein (CRP)", 
         subtitle = visit(), 
@@ -118,9 +119,9 @@ mod_trial_server <- function(input, output, session, pat_flt, lab_flt){
   })
   
   output$plot_visitIGA <- renderPlot({
-    checkData()
+    check_data()
     lab_flt() %>% 
-    plotLabMeasurementAtVisit( !!measurement(), visit(), "IGA" ) +
+      plot_lab_measurement_at_visit(!!measurement(), visit(), "IGA") +
       labs(
         title = "Immunoglobulin A (IGA)",
         subtitle = visit(), 

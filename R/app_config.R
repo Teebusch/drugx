@@ -4,7 +4,7 @@
 #'     point to inside the current package.
 #' 
 #' @noRd
-app_sys <- function(...){
+app_sys <- function(...) {
   system.file(..., package = "drugx")
 }
 

@@ -4,17 +4,17 @@
 #'     DO NOT REMOVE.
 #' @import shiny
 #' @noRd
-app_server <- function( input, output, session ) {
+app_server <- function(input, output, session) {
   
   filters <- callModule(mod_filters_server, "filters_ui_1")
   
   pat_flt <- reactive({
     pat %>% 
       filter(
-        betweenRange(AGE, filters$flt_age()),
+        between_range(AGE, filters$flt_age()),
         SEX %in% filters$flt_sex(),
         RACE %in% filters$flt_race(),
-        betweenRange(BMRKR1, filters$flt_biomarker1()),
+        between_range(BMRKR1, filters$flt_biomarker1()),
         BMRKR2 %in% filters$flt_biomarker2()
       )
   })
