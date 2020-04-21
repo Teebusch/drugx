@@ -14,7 +14,10 @@ the results of a clinical trial for the fictive drug “Drug X”.
 
 ## Installation and Use
 
-You can install and run the app from
+An online demo of the app can be found at
+<https://teebusch.shinyapps.io/drugx/>
+
+You can install and run the app locally from
 [Github](https://github.com/teebusch/drugx) with:
 
 ``` r
@@ -109,6 +112,9 @@ drugx::run_app()
 
   - \[ \] allow data to filter by performance of screening, individual
     patient
+  - \[ \] complete function documentation
+  - \[ \] optimize loading times by refactoring data transforms and
+    filtering
   - \[ \] comprehensive test suite
   - \[ \] statistical models with significance tests
   - \[ \] interactive plotly plots with hover functionality
