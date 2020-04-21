@@ -1,0 +1,12 @@
+name: drugx
+title: drugx
+username:
+account: teebusch
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 2155807
+bundleId: 3042946
+url: https://teebusch.shinyapps.io/drugx/
+when: 1587453874.2178
+asMultiple: FALSE
+asStatic: FALSE

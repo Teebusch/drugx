@@ -23,7 +23,9 @@ This is a Shiny app using some (simulated) clinical data to visualize the result
 
 ## Installation and Use
 
-You can install and run the app from [Github](https://github.com/teebusch/drugx) with:
+An online Demo The app can be found at https://teebusch.shinyapps.io/drugx/
+
+You can install and run the app locally from [Github](https://github.com/teebusch/drugx) with:
 
 ``` r
 install_github("Teebusch/drugx")
