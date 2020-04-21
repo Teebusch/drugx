@@ -106,6 +106,8 @@ subjects
 ## ToDo / Possible next steps
 
 - [ ] allow data to filter by performance of screening, individual patient
+- [ ] complete function documentation
+- [ ] optimize loading times by refactoring data transforms and filtering
 - [ ] comprehensive test suite 
 - [ ] statistical models with significance tests
 - [ ] interactive plotly plots with hover functionality

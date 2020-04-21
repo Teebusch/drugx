@@ -77,6 +77,7 @@ plot_proportions_by_arm <- function(df, var) {
     ) %>% 
     ggplot(aes(prop, {{ var }}, color = ACTARM)) +
     geom_point(size = 4, alpha = .7) +
+    geom_text(aes(label = stringr::str_extract(ACTARM, "^[ABC]")), nudge_y = .15, vjust = "middle") +
     scale_color_drugx() +
     labs(x = "Proportion in Sample") +
     theme(

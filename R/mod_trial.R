@@ -15,7 +15,7 @@ mod_trial_ui <- function(id) {
     h1("Clinical Trial Results"),
     radioButtons(
       ns("measurement"), 
-      "Select how measurements are displayed",
+      "Select how measurements are displayed.",
       choices = list(
         "Difference to Baseline" = "AVAL_CHANGE",
         "Absolute" = "AVAL"
